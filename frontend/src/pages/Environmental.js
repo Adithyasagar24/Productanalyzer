@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useProduct } from '../context/ProductContext';
 import { Shield, AlertTriangle, Leaf, CheckCircle, Info, TrendingUp, BarChart3, FileText, RefreshCw } from 'lucide-react';
-import { Doughnut, Bar } from 'react-chartjs-2';
+import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title);
 
 const Environmental = () => {
-  const { products, selectedProduct, setSelectedProduct } = useProduct();
+  const { products = [], selectedProduct, setSelectedProduct } = useProduct();
   const [analysisData, setAnalysisData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [complianceChecklist, setComplianceChecklist] = useState(null);
@@ -101,9 +101,9 @@ const Environmental = () => {
     labels: ['Toxicity', 'Chemical Risks', 'Environmental Impact'],
     datasets: [{
       data: [
-        analysisData.toxicity?.score || 0,
-        analysisData.chemicalRisks?.score || 0,
-        analysisData.environmentalImpact?.score || 0
+        analysisData?.toxicity?.score || 0,
+        analysisData?.chemicalRisks?.score || 0,
+        analysisData?.environmentalImpact?.score || 0
       ],
       backgroundColor: ['#EF4444', '#F59E0B', '#10B981'],
       borderWidth: 2,
@@ -129,7 +129,7 @@ const Environmental = () => {
           <BarChart3 className="mr-2" />
           Product Selection
         </h2>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -150,7 +150,7 @@ const Environmental = () => {
                 </option>
               ))}
             </select>
-            
+
             {selectedProduct && (
               <button
                 onClick={analyzeEnvironmentalHazards}
@@ -183,7 +183,7 @@ const Environmental = () => {
                 </option>
               ))}
             </select>
-            
+
             {selectedProducts.length >= 2 && (
               <button
                 onClick={compareProducts}
@@ -208,18 +208,18 @@ const Environmental = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
             <div className="text-center">
-              <div className="text-4xl font-bold mb-2" style={{ color: getRiskColor(analysisData.riskScore) }}>
+              <div className="text-4xl font-bold mb-2" style={{ color: getRiskColor(analysisData.riskScore || 0) }}>
                 {(analysisData.riskScore * 100).toFixed(1)}%
               </div>
               <div className="text-sm text-gray-600">Overall Risk Score</div>
-              <div className="text-lg font-semibold" style={{ color: getRiskColor(analysisData.riskScore) }}>
-                {getRiskLabel(analysisData.riskScore)} Risk
+              <div className="text-lg font-semibold" style={{ color: getRiskColor(analysisData.riskScore || 0) }}>
+                {getRiskLabel(analysisData.riskScore || 0)} Risk
               </div>
             </div>
 
             <div className="lg:col-span-2">
-              <Doughnut 
-                data={chartData} 
+              <Doughnut
+                data={chartData}
                 options={{
                   responsive: true,
                   plugins: { legend: { position: 'bottom' } }
@@ -228,7 +228,7 @@ const Environmental = () => {
             </div>
           </div>
 
-          {analysisData.recommendations && analysisData.recommendations.length > 0 && (
+          {Array.isArray(analysisData.recommendations) && analysisData.recommendations.length > 0 && (
             <div className="mt-6">
               <h3 className="text-lg font-semibold mb-3">Recommendations</h3>
               <div className="space-y-3">
@@ -260,19 +260,19 @@ const Environmental = () => {
       )}
 
       {/* Compliance Checklist */}
-      {complianceChecklist && (
+      {complianceChecklist?.categories?.length > 0 && (
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-xl font-semibold mb-4 flex items-center">
             <FileText className="mr-2" />
             Environmental Compliance Checklist
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {complianceChecklist.categories.map((category, index) => (
               <div key={index} className="border rounded-lg p-4">
                 <h3 className="font-semibold text-lg mb-3 text-gray-800">{category.name}</h3>
                 <ul className="space-y-2">
-                  {category.items.map((item, itemIndex) => (
+                  {Array.isArray(category.items) && category.items.map((item, itemIndex) => (
                     <li key={itemIndex} className="flex items-center text-sm text-gray-600">
                       <div className="w-4 h-4 border border-gray-300 rounded mr-3 flex-shrink-0"></div>
                       {item}
@@ -288,4 +288,4 @@ const Environmental = () => {
   );
 };
 
-export default Environmental; 
+export default Environmental;

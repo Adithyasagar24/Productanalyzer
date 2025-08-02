@@ -1,3 +1,5 @@
+# Productanalyzer
+
 # Product Analyzer - Smart Product Analysis & Report Maker
 
 A comprehensive web application for analyzing products, generating insights, and creating detailed reports with competitor analysis and market trends.
@@ -236,4 +238,8 @@ For support and questions:
 
 ---
 
+<<<<<<< HEAD
 **Product Analyzer** - Making product analysis simple and insightful! 📊✨ 
+=======
+**Product Analyzer** - Making product analysis simple and insightful! 📊✨ 
+>>>>>>> Kridey
